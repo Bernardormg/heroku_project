@@ -1,6 +1,6 @@
 class LinksController < ApplicationController
   before_action :set_link, only: [:show, :edit, :update, :destroy]
-
+  validLink = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
   # GET /links
   # GET /links.json
   def index
@@ -25,14 +25,15 @@ class LinksController < ApplicationController
   # POST /links.json
   def create
     @link = Link.new(link_params)
-
     respond_to do |format|
-      if @link.save
-        format.html { redirect_to @link, notice: 'Link was successfully created.' }
-        format.json { render :show, status: :created, location: @link }
-      else
-        format.html { render :new }
-        format.json { render json: @link.errors, status: :unprocessable_entity }
+      if validates_format_of @link.Link, :with => /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/ix
+       if @link.save
+         format.html { redirect_to @link, notice: 'Link was successfully created.' }
+         format.json { render :show, status: :created, location: @link }
+       else
+         format.html { render :new }
+         format.json { render json: @link.errors, status: :unprocessable_entity }
+       end
       end
     end
   end

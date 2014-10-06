@@ -18,7 +18,9 @@ class LinksControllerTest < ActionController::TestCase
 
   test "should create link" do
     assert_difference('Link.count') do
-      post :create, link: { Description: @link.Description, Link: @link.Link, Name: @link.Name }
+      if validates_uri_existence_of :Link, :with =>/(^$)|(^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
+        post :create, link: { Description: @link.Description, Link: @link.Link, Name: @link.Name }
+      end
     end
 
     assert_redirected_to link_path(assigns(:link))
